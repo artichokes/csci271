@@ -155,13 +155,14 @@ bool closest_n(std::list<Person> &population, std::string last_name, unsigned n,
     std::list<Person> temp(population);
 
     // Remove the person from the list
-    temp.erase(std::next(
-            temp.begin(),
-            std::distance(population.begin(), person_iterator))
-    );
+    std::list<Person>::iterator temp_it = temp.begin();
+    std::advance(temp_it, std::distance(population.begin(), person_iterator));
+    temp.erase(temp_it);
+
+    // Sort the list using the difference object
     temp.sort(difference);
 
-
+    // Append the closest n people to the output list
     size_t i = 0;
     for (std::list<Person>::iterator it = temp.begin(); it != temp.end() && i < n; ++it) {
         closest.push_back(*it);
