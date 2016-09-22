@@ -19,8 +19,13 @@ public:
         this->headPtr->nextNodePtr = tailPtr;
     }
 
-    list(const list<T> &other) : list() {
+    list(const list<T> &other) : list<T>() {
         (*this) = other;
+    }
+
+    list(std::initializer_list<T> list) : list<T>() {
+        for (const auto elem : list)
+            this->push_back(elem);
     }
 
     ~list() {
