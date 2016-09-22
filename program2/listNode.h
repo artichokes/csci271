@@ -7,6 +7,8 @@
 #ifndef LISTNODE_H
 #define LISTNODE_H
 
+using namespace std;
+
 template<typename T>
 class list;
 

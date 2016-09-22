@@ -7,8 +7,14 @@
 #ifndef LIST_H
 #define LIST_H
 
+#if __cplusplus <= 201103L
+#include <initializer_list>
+#endif
+
 #include "listNode.h"
 #include "iter.h"
+
+using namespace std;
 
 // Class list
 template<typename T>
@@ -26,11 +32,13 @@ public:
         (*this) = other;
     }
 
+#if __cplusplus <= 201103L
     // Creates a list with the specified elements
     list(std::initializer_list<T> list) : list<T>() {
         for (const auto elem : list)
             this->push_back(elem);
     }
+#endif
 
     // Destroys the list, deleting its contents
     ~list() {

@@ -9,12 +9,17 @@
 
 #include "listNode.h"
 
+using namespace std;
+
 // Class iter
 template<typename T>
 class iter {
     friend class list<T>;
 
 public:
+    // Creates an iterator pointing to null
+    iter<T>() : nodePtr(nullptr) {}
+
     // Creates an iterator that points to the specified node
     iter<T>(listNode<T> *nodePtr) : nodePtr(nodePtr) {}
 

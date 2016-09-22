@@ -49,7 +49,13 @@ int main() {
     assert(testlist.size() == 0);
 
     // Test initialization list constructor
+#if __cplusplus <= 201103L
     list<int> secondlist = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+#else
+    list<int> secondlist;
+    for (int i = 1; i < 11; ++i)
+        secondlist.push_back(i);
+#endif
     int correct_array[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     assert(!secondlist.empty());
     assert(secondlist.size() == 10);
