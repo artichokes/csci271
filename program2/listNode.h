@@ -20,9 +20,11 @@ class listNode {
     friend class iter<T>;
 
 public:
+    // Creates a new list node with the specified arguments
     listNode(T *value, listNode<T> *prevNodePtr = nullptr, listNode<T> *nextNodePtr = nullptr) :
             prevNodePtr(prevNodePtr), nextNodePtr(nextNodePtr), value(value) {}
 
+    // Destroys the node, deleting the value it contains
     ~listNode() {
         delete (this->value);
     }
