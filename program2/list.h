@@ -99,22 +99,30 @@ public:
         ++this->length;
     }
 
-    void pop_front() {
+    T pop_front() {
         listNode<T> *front = this->headPtr->nextNodePtr;
+        T value = *front->value;
+
         this->headPtr->nextNodePtr = front->nextNodePtr;
         this->headPtr->nextNodePtr->prevNodePtr = this->headPtr;
-        delete (front);
 
+        delete (front);
         --this->length;
+
+        return value;
     }
 
-    void pop_back() {
+    T pop_back() {
         listNode<T> *back = this->tailPtr->prevNodePtr;
+        T value = *back->value;
+
         this->tailPtr->prevNodePtr = back->prevNodePtr;
         this->tailPtr->prevNodePtr->nextNodePtr = this->tailPtr;
-        delete (back);
 
+        delete (back);
         --this->length;
+
+        return value;
     }
 
 private:
