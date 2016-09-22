@@ -1,7 +1,7 @@
 /*
  * Peter Nguyen
  * CSCI 271, Fall 2016
- * Program 2, Due Thursday, Feb. 11
+ * Program 2, Due Thursday, Sept. 22
  */
 
 #ifndef ITER_H
