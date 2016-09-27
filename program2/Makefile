@@ -10,7 +10,7 @@ default_target: all
 SHELL = /bin/sh
 
 # The c++ compiler executable.
-CXX = /usr/bin/g++ -std=c++0x -O3
+CXX = g++ -std=c++0x -O3
 
 # The command to remove a file.
 RM_RF = rm -rf
@@ -24,16 +24,23 @@ OBJ_FILES := $(addprefix obj/,$(notdir $(CPP_FILES:.cpp=.o)))
 # Targets.
 
 # The main all target
-all: clean test
+all: clean p2main
 .PHONY : all
 
 # The main clean target
 clean:
-	$(RM_RF) $(OBJ_FILES) obj/test.o obj test
+	$(RM_RF) $(OBJ_FILES) obj/test.o obj/p2main.o obj test p2main
 .PHONY : clean
+
+p2main: $(OBJ_FILES) obj/p2main.o
+	$(CXX) -o p2main $^
 
 test: $(OBJ_FILES) obj/test.o
 	$(CXX) -o test $^
+
+obj/p2main.o: p2main.cpp
+	$(MKDIR_P) obj
+	$(CXX) -c -o $@ $<
 
 obj/test.o: test.cpp
 	$(MKDIR_P) obj
