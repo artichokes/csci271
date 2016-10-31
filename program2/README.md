@@ -1,4 +1,4 @@
-## Program 1
+## Program 2
 #### Due Tuesday, Sept. 27
 
 ------------------------------
