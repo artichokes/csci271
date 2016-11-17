@@ -28,7 +28,12 @@ void print_help();
 /// \brief Abstract class for a hash set
 class HashSet {
 public:
-    HashSet(int capacity) : _capacity(capacity) {}
+    HashSet(int capacity) :
+            _capacity(capacity),
+            _size(0),
+            _probes(0),
+            _unsuccessful_searches(0),
+            _successful_searches(0) {}
 
     virtual bool insert(std::string key) = 0;
 
@@ -52,10 +57,10 @@ public:
     int successfulSearches() { return _successful_searches; };
 
 protected:
-    int _size = 0;
-    int _probes = 0;
-    int _unsuccessful_searches = 0;
-    int _successful_searches = 0;
+    int _size;
+    int _probes;
+    int _unsuccessful_searches;
+    int _successful_searches;
 
     /// \brief Hashes a string
     /// \param key The string key to hash
