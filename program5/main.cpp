@@ -1,7 +1,7 @@
 /*
  * Peter Nguyen
  * CSCI 271, Fall 2016
- * Program 4, Due Tuesday, Nov. 1
+ * Program 5, Due Thursday, Nov. 17
  * Compile with -std=c++0x -O3
  */
 
