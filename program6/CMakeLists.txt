@@ -4,6 +4,6 @@ project(program6)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 
-set(SOURCE_FILES main.cpp)
-add_executable(program6 ${SOURCE_FILES})
+add_executable(program6_dfs dfs.cpp)
+add_executable(program6_kahn khan.cpp)
 file(COPY ../resources DESTINATION ./)
