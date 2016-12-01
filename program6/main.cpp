@@ -12,28 +12,26 @@
 #include <map>
 #include <set>
 #include <list>
-
-#ifdef DEBUG
-const std::string COURSES_FILE = "./resources/courses.dat";
-#endif
+#include <cstdio>
+#include <unistd.h>
 
 class Graph {
 public:
     Graph() {}
 
-    void insert_vertex(std::string vertex) {
-        this->adjlist[vertex];
+    void insert_node(std::string node) {
+        this->adjlist[node];
     }
 
-    void insert_edge(std::string in, std::string out) {
+    void insert_edge(std::string out, std::string in) {
         this->adjlist[out].insert(in);
     }
 
     void list_graph() {
-        for (const auto &v : this->adjlist) {
-            std::cout << v.first << " -> ";
-            for (const auto &e : v.second) {
-                std::cout << e << ' ';
+        for (const auto &out : this->adjlist) {
+            std::cout << out.first << " -> ";
+            for (const auto &in : out.second) {
+                std::cout << in << ' ';
             }
             std::cout << '\n';
         }
@@ -44,42 +42,49 @@ public:
 
 namespace topsort {
     namespace details {
-        void tophelp(Graph &graph,
-                     std::map<std::string, bool> &visited,
-                     std::list<std::string> &acc,
-                     std::string const &v) {
-            visited[v] = true;
+        void visit(Graph &graph,
+                   std::map<std::string, char> &visited,
+                   std::list<std::string> &acc,
+                   std::string const &v) {
+            if (visited[v] == 1)
+                throw "Graph is not a DAG!";
 
-            for (const auto &w : graph.adjlist[v])
-                if (!visited[w])
-                    tophelp(graph, visited, acc, w);
+            if (visited[v] == 0) {
+                visited[v] = 1; // Temporarily mark the node
 
-            acc.push_front(v);
+                for (const auto &w : graph.adjlist[v])
+                    visit(graph, visited, acc, w);
+
+                visited[v] = 2; // Mark the node as visited
+
+                acc.push_front(v); // Prepend the node to the result
+            }
         }
     }
 
     // Uses DFS
     std::list<std::string> sort(Graph &graph) {
-        std::map<std::string, bool> visited;
+        std::map<std::string, char> visited;
         std::list<std::string> result;
 
         for (const auto &v : graph.adjlist)
             visited[v.first] = false;
 
         for (const auto &v : graph.adjlist)
-            if (!visited[v.first])
-                details::tophelp(graph, visited, result, v.first);
+            if (visited[v.first] == 0)
+                details::visit(graph, visited, result, v.first);
 
         return result;
     }
 }
 
 void readCourses(std::istream &courses_stream, Graph &graph) {
-    for (std::string innode; courses_stream >> innode;) {
-        graph.insert_vertex(innode);
+    for (std::string innode; courses_stream >> innode && innode != "";) {
+        graph.insert_node(innode);
 
         for (std::string outnode; courses_stream >> outnode && outnode != "#";) {
-            graph.insert_edge(innode, outnode);
+            graph.insert_node(outnode);
+            graph.insert_edge(outnode, innode);
         }
     }
 }
@@ -87,21 +92,24 @@ void readCourses(std::istream &courses_stream, Graph &graph) {
 int main(int argc, char *argv[]) {
     Graph courses;
 
-    // Open courses file
-    std::ifstream coursesFile;
-    coursesFile.open(COURSES_FILE);
-    if (coursesFile.fail()) {
-        std::cout << "Failed to open file '" << COURSES_FILE << "'!" << std::endl;
+    if (isatty(fileno(stdin))) {
+        std::cout << "Please use stdin redirection,"
+                  << " e.g. `p6 < courses.dat`, to read a file."
+                  << std::endl;
         return 1;
     }
 
-    readCourses(coursesFile, courses);
+    readCourses(std::cin, courses);
 
-    for (const auto &v : topsort::sort(courses))
-        std::cout << v << '\n';
+    try {
+        // Try to sort the graph
+        for (const auto &v : topsort::sort(courses))
+            std::cout << v << '\n';
+    } catch (const char* err) {
+        std::cout << err << std::endl;
+        return 1;
+    }
 
-    // Close courses file
-    coursesFile.close();
 
     return 0;
 }
