@@ -8,18 +8,20 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <iomanip>
-#include <map>
-#include <set>
+#include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 #include <list>
 #include <queue>
 #include <cstdio>
 #include <unistd.h>
 
+/// \brief A graph using an adjacency list
 class Graph {
 public:
-    Graph() {}
-
+    /// \brief Inserts a node into the graph
+    ///
+    /// \param node The vertex to add to the graph
     void insert_node(std::string node) {
         if (this->adjlist.find(node) == this->adjlist.end()) { // Node not in adjlist
             this->adjlist[node]; // Add node to adjlist
@@ -27,11 +29,16 @@ public:
         }
     }
 
+    /// \brief Inserts an edge into the graph
+    ///
+    /// \param out The source node
+    /// \param in The sink node
     void insert_edge(std::string out, std::string in) {
         this->adjlist[out].insert(in); // Add edge
         ++this->indegree[in]; // Increment indegree
     }
 
+    /// \brief Lists the adjacency matrix
     void list_graph() {
         for (const auto &out : this->adjlist) {
             std::cout << out.first << " -> ";
@@ -42,27 +49,38 @@ public:
         }
     }
 
+    /// \brief Lists the indegrees of each vertex
     void list_indegree() {
         for (const auto &v : this->indegree) {
             std::cout << v.first << ' ' << v.second << std::endl;
         }
     }
 
-    std::map<std::string, std::set<std::string>> adjlist;
-    std::map<std::string, unsigned> indegree;
+    std::unordered_map<std::string, std::unordered_set<std::string>> adjlist;
+    std::unordered_map<std::string, unsigned> indegree;
 };
 
+/// \brief Reads from an input stream into a graph
+///
+/// \param courses_stream The stream to read from
+/// \param graph The graph to add nodes and edges to
 void readCourses(std::istream &courses_stream, Graph &graph) {
     for (std::string innode; courses_stream >> innode;) {
+        std::transform(innode.begin(), innode.end(), innode.begin(), ::tolower);
         graph.insert_node(innode);
 
         for (std::string outnode; courses_stream >> outnode && outnode != "#";) {
+            std::transform(outnode.begin(), outnode.end(), outnode.begin(), ::tolower);
             graph.insert_node(outnode);
             graph.insert_edge(outnode, innode);
         }
     }
 }
 
+/// \brief Topologically sorts a graph using Khan's algorithm
+///
+/// \param graph The graph to sort
+/// \return A list of the vertices topologically sorted
 std::list<std::string> topsort(Graph &graph) {
     std::list<std::string> result; // Result list
     std::queue<std::string> noin; // Set of nodes with no incoming edges
@@ -97,6 +115,7 @@ std::list<std::string> topsort(Graph &graph) {
 int main(int argc, char *argv[]) {
     Graph courses;
 
+    // If stdin is not a file redirection
     if (isatty(fileno(stdin))) {
         std::cout << "Please use stdin redirection,"
                   << " e.g. `p6 < courses.dat`, to read a file."
@@ -105,9 +124,6 @@ int main(int argc, char *argv[]) {
     }
 
     readCourses(std::cin, courses);
-
-//    courses.list_graph();
-//    courses.list_indegree();
 
     try {
         // Try to sort the graph
