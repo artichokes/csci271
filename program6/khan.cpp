@@ -91,7 +91,8 @@ std::list<std::string> topsort(Graph &graph) {
             noin.push(v.first);
 
     while (!noin.empty()) {
-        const std::string &n = noin.front();
+        const std::string &top = noin.front();
+        std::string n = top;
         noin.pop();
 
         result.push_back(n);
